@@ -33,7 +33,7 @@ void FileEntity::Prepare()
     fullPath.append(*directory.get());
     fullPath.append("\\");
     fullPath.append(*fileName.get());
-    
+
     file = new ifstream(fullPath, ios::in | ios::binary);
 
     if (file) {
@@ -51,6 +51,7 @@ bool FileEntity::IsPrepared()
 
 int FileEntity::EvaluateFetchSize()
 {
+    fileSize = CountFileSize();
     if (fetchSize <= 0) {
         return OptimizedFetchSize();
     }
@@ -83,8 +84,6 @@ int FileEntity::CountFileSize()
 
 int FileEntity::OptimizedFetchSize()
 {
-    int fileSize = CountFileSize();
-
     int mod4 = fileSize % 4;
     int mod16 = fileSize % 16;
     int mod64 = fileSize % 64;
@@ -109,7 +108,7 @@ int FileEntity::OptimizedFetchSize()
     scores.push_back(score64);
     scores.push_back(score256);
     scores.push_back(score1024);
-    
+
     sort(scores.begin(), scores.end());
     if (scores.at(0) == score4) {
         return 4;
@@ -131,38 +130,85 @@ int FileEntity::OptimizedFetchSize()
 void FileEntity::Fetch4()
 {
     char readBuffer[4];
-    Fetch(readBuffer, 4);
+    while (!file->eof()) {
+        memset(readBuffer, 0, 4);
+        file->read(readBuffer, 4);
+        int iLoopCount = 4;
+        if (iLoopCount > fileSize) {
+            iLoopCount = fileSize;
+        }
+        for (int i = 0; i < iLoopCount; i++) {
+            fileContents->push_back(readBuffer[i]);
+        }
+        fileSize -= 4;
+    }
 }
 
 void FileEntity::Fetch16()
 {
     char readBuffer[16];
-    Fetch(readBuffer, 16);
+    while (!file->eof()) {
+        memset(readBuffer, 0, 16);
+        file->read(readBuffer, 16);
+        int iLoopCount = 16;
+        if (iLoopCount > fileSize) {
+            iLoopCount = fileSize;
+        }
+        for (int i = 0; i < iLoopCount; i++) {
+            fileContents->push_back(readBuffer[i]);
+        }
+        fileSize -= 16;
+    }
 }
 
 void FileEntity::Fetch64()
 {
     char readBuffer[64];
-    Fetch(readBuffer, 64);
+    while (!file->eof()) {
+        memset(readBuffer, 0, 64);
+        file->read(readBuffer, 64);
+        int iLoopCount = 64;
+        if (iLoopCount > fileSize) {
+            iLoopCount = fileSize;
+        }
+        for (int i = 0; i < iLoopCount; i++) {
+            fileContents->push_back(readBuffer[i]);
+        }
+        fileSize -= 64;
+    }
 }
 
 void FileEntity::Fetch256()
 {
     char readBuffer[256];
-    Fetch(readBuffer, 256);
+    while (!file->eof()) {
+        memset(readBuffer, 0, 256);
+        file->read(readBuffer, 256);
+        int iLoopCount = 256;
+        if (iLoopCount > fileSize) {
+            iLoopCount = fileSize;
+        }
+        for (int i = 0; i < iLoopCount; i++) {
+            fileContents->push_back(readBuffer[i]);
+        }
+        fileSize -= 256;
+    }
 }
 
 void FileEntity::Fetch1024()
 {
     char readBuffer[1024];
-    Fetch(readBuffer, 1024);
-}
-
-void FileEntity::Fetch(char readBuffer[], int size)
-{
     while (!file->eof()) {
-        file->read(readBuffer, size);
-        fileContents->push_back(*readBuffer);
+        memset(readBuffer, 0, 1024);
+        file->read(readBuffer, 1024);
+        int iLoopCount = 1024;
+        if (iLoopCount > fileSize) {
+            iLoopCount = fileSize;
+        }
+        for (int i = 0; i < iLoopCount; i++) {
+            fileContents->push_back(readBuffer[i]);
+        }
+        fileSize -= 1024;
     }
 }
 
@@ -200,7 +246,7 @@ bool FileEntity::IsReadSuccess()
 
 vector<char> * FileEntity::GetFileContents()
 {
-    return fileContents.get();
+    return fileContents;
 }
 
 FileEntity::FileEntity()
@@ -209,7 +255,7 @@ FileEntity::FileEntity()
     fileName = unique_ptr<string>();
     fetchSize = -1;
     file = nullptr;
-    fileContents = unique_ptr<vector<char>>();
+    fileContents = new vector<char>();
     disposed = false;
 }
 
@@ -219,6 +265,7 @@ void FileEntity::Dispose()
         file->close();
         delete file;
     }
+    delete fileContents;
     disposed = true;
 }
 

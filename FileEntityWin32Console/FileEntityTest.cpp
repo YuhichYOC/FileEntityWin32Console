@@ -13,7 +13,7 @@ void FileEntityTest::FileEntityTest01()
 
     FileEntity * f = new FileEntity();
     f->SetDirectory(new string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ì¬•¨\\Proj.1609"));
-    f->SetFileName(new string("test.txt"));
+    f->SetFileName(new string("TestMethod4 - ƒRƒs["));
 
     f->Prepare();
     if (!f->IsPrepared()) {
@@ -43,7 +43,6 @@ void FileEntityTest::FileEntityTest01()
 FileEntityTest::FileEntityTest()
 {
 }
-
 
 FileEntityTest::~FileEntityTest()
 {

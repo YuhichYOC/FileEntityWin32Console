@@ -14,7 +14,9 @@ private:
 
     ifstream * file;
 
-    unique_ptr<vector<char>> fileContents;
+    int fileSize;
+
+    vector<char> * fileContents;
 
     bool prepared;
 
@@ -37,8 +39,6 @@ private:
     void Fetch256();
 
     void Fetch1024();
-    
-    void Fetch(char readBuffer[], int size);
 
 public:
 
@@ -68,4 +68,3 @@ public:
 
     ~FileEntity();
 };
-
