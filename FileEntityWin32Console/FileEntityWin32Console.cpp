@@ -17,8 +17,24 @@ void FileEntityTest01()
     }
 }
 
+void FileEntityTest02()
+{
+    FileEntityTest * fTest = new FileEntityTest();
+    fTest->FileEntityTest02();
+    if (fTest->GetTestSuccess()) {
+        cout << "fTest 02 success." << "\n";
+    }
+    else {
+        cout << "fTest 02 failed." << "\n";
+    }
+}
+
 int main()
 {
+    /*
     FileEntityTest01();
+    */
+    FileEntityTest02();
+
     return 0;
 }
