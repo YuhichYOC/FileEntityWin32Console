@@ -14,6 +14,8 @@ public:
 
     void FileEntityTest01();
 
+    void FileEntityTest02();
+
     FileEntityTest();
 
     ~FileEntityTest();

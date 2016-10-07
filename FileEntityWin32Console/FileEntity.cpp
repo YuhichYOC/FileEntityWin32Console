@@ -27,26 +27,47 @@ void FileEntity::SetFetchSize(int arg)
     fetchSize = arg;
 }
 
-void FileEntity::Prepare()
+int FileEntity::GetFetchSize()
 {
-    string fullPath;
-    fullPath.append(*directory.get());
-    fullPath.append("\\");
-    fullPath.append(*fileName.get());
+    return fetchSize;
+}
 
-    file = new ifstream(fullPath, ios::in | ios::binary);
+void FileEntity::SetFileContents(vector<char> * arg)
+{
+    fileContents = arg;
+}
 
-    if (file) {
-        prepared = true;
-    }
-    else {
-        prepared = false;
+void FileEntity::SetFileContentsClone(vector<char> * arg)
+{
+    fileContents = new vector<char>();
+    for (size_t i = 0; i < arg->size(); i++) {
+        fileContents->push_back(arg->at(i));
     }
 }
 
-bool FileEntity::IsPrepared()
+vector<char> * FileEntity::GetFileContents()
 {
-    return prepared;
+    return fileContents;
+}
+
+bool FileEntity::IsReadPrepared()
+{
+    return readPrepared;
+}
+
+bool FileEntity::IsWritePrepared()
+{
+    return writePrepared;
+}
+
+bool FileEntity::IsReadSuccess()
+{
+    return readSuccess;
+}
+
+bool FileEntity::IsWriteSuccess()
+{
+    return writeSuccess;
 }
 
 int FileEntity::EvaluateFetchSize()
@@ -74,10 +95,10 @@ int FileEntity::EvaluateFetchSize()
 
 int FileEntity::CountFileSize()
 {
-    file->seekg(0, istream::end);
-    streamoff endPos = file->tellg();
-    file->seekg(0, istream::beg);
-    streamoff startPos = file->tellg();
+    ifile->seekg(0, istream::end);
+    streamoff endPos = ifile->tellg();
+    ifile->seekg(0, istream::beg);
+    streamoff startPos = ifile->tellg();
 
     return (int)(endPos - startPos);
 }
@@ -130,9 +151,9 @@ int FileEntity::OptimizedFetchSize()
 void FileEntity::Fetch4()
 {
     char readBuffer[4];
-    while (!file->eof()) {
+    while (!ifile->eof()) {
         memset(readBuffer, 0, 4);
-        file->read(readBuffer, 4);
+        ifile->read(readBuffer, 4);
         int iLoopCount = 4;
         if (iLoopCount > fileSize) {
             iLoopCount = fileSize;
@@ -147,9 +168,9 @@ void FileEntity::Fetch4()
 void FileEntity::Fetch16()
 {
     char readBuffer[16];
-    while (!file->eof()) {
+    while (!ifile->eof()) {
         memset(readBuffer, 0, 16);
-        file->read(readBuffer, 16);
+        ifile->read(readBuffer, 16);
         int iLoopCount = 16;
         if (iLoopCount > fileSize) {
             iLoopCount = fileSize;
@@ -164,9 +185,9 @@ void FileEntity::Fetch16()
 void FileEntity::Fetch64()
 {
     char readBuffer[64];
-    while (!file->eof()) {
+    while (!ifile->eof()) {
         memset(readBuffer, 0, 64);
-        file->read(readBuffer, 64);
+        ifile->read(readBuffer, 64);
         int iLoopCount = 64;
         if (iLoopCount > fileSize) {
             iLoopCount = fileSize;
@@ -181,9 +202,9 @@ void FileEntity::Fetch64()
 void FileEntity::Fetch256()
 {
     char readBuffer[256];
-    while (!file->eof()) {
+    while (!ifile->eof()) {
         memset(readBuffer, 0, 256);
-        file->read(readBuffer, 256);
+        ifile->read(readBuffer, 256);
         int iLoopCount = 256;
         if (iLoopCount > fileSize) {
             iLoopCount = fileSize;
@@ -198,9 +219,9 @@ void FileEntity::Fetch256()
 void FileEntity::Fetch1024()
 {
     char readBuffer[1024];
-    while (!file->eof()) {
+    while (!ifile->eof()) {
         memset(readBuffer, 0, 1024);
-        file->read(readBuffer, 1024);
+        ifile->read(readBuffer, 1024);
         int iLoopCount = 1024;
         if (iLoopCount > fileSize) {
             iLoopCount = fileSize;
@@ -209,6 +230,50 @@ void FileEntity::Fetch1024()
             fileContents->push_back(readBuffer[i]);
         }
         fileSize -= 1024;
+    }
+}
+
+void FileEntity::ReadPrepare()
+{
+    if (writePrepared) {
+        readPrepared = false;
+        return;
+    }
+
+    string fullPath;
+    fullPath.append(*directory.get());
+    fullPath.append("\\");
+    fullPath.append(*fileName.get());
+
+    ifile = new ifstream(fullPath, ios::in | ios::binary);
+
+    if (ifile) {
+        readPrepared = true;
+    }
+    else {
+        readPrepared = false;
+    }
+}
+
+void FileEntity::WritePrepare()
+{
+    if (readPrepared) {
+        writePrepared = false;
+        return;
+    }
+
+    string fullPath;
+    fullPath.append(*directory.get());
+    fullPath.append("\\");
+    fullPath.append(*fileName.get());
+
+    ofile = new ofstream(fullPath, ios::out | ios::binary);
+
+    if (ofile) {
+        writePrepared = true;
+    }
+    else {
+        writePrepared = false;
     }
 }
 
@@ -234,19 +299,22 @@ void FileEntity::ReadFile()
         Fetch1024();
         break;
     }
-    file->close();
+    ifile->close();
 
     readSuccess = true;
 }
 
-bool FileEntity::IsReadSuccess()
+void FileEntity::WriteFile()
 {
-    return readSuccess;
-}
+    writeSuccess = false;
 
-vector<char> * FileEntity::GetFileContents()
-{
-    return fileContents;
+    int iWriteCount = fileContents->size();
+    for (int i = 0; i < iWriteCount; i++) {
+        ofile->write(&fileContents->at(i), 1);
+    }
+    ofile->close();
+
+    writeSuccess = true;
 }
 
 FileEntity::FileEntity()
@@ -254,16 +322,21 @@ FileEntity::FileEntity()
     directory = unique_ptr<string>();
     fileName = unique_ptr<string>();
     fetchSize = -1;
-    file = nullptr;
+    ifile = nullptr;
+    ofile = nullptr;
     fileContents = new vector<char>();
     disposed = false;
 }
 
 void FileEntity::Dispose()
 {
-    if (prepared) {
-        file->close();
-        delete file;
+    if (readPrepared) {
+        ifile->close();
+        delete ifile;
+    }
+    if (writePrepared) {
+        ofile->close();
+        delete ofile;
     }
     delete fileContents;
     disposed = true;

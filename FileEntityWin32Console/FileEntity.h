@@ -12,15 +12,21 @@ private:
 
     int fetchSize;
 
-    ifstream * file;
+    ifstream * ifile;
+
+    ofstream * ofile;
 
     int fileSize;
 
     vector<char> * fileContents;
 
-    bool prepared;
+    bool readPrepared;
+
+    bool writePrepared;
 
     bool readSuccess;
+
+    bool writeSuccess;
 
     bool disposed;
 
@@ -52,15 +58,29 @@ public:
 
     void SetFetchSize(int arg);
 
-    void Prepare();
+    int GetFetchSize();
 
-    bool IsPrepared();
+    void SetFileContents(vector<char> * arg);
 
-    void ReadFile();
+    void SetFileContentsClone(vector<char> * arg);
+
+    vector<char> * GetFileContents();
+
+    bool IsReadPrepared();
+
+    bool IsWritePrepared();
 
     bool IsReadSuccess();
 
-    vector<char> * GetFileContents();
+    bool IsWriteSuccess();
+
+    void ReadPrepare();
+
+    void WritePrepare();
+
+    void ReadFile();
+
+    void WriteFile();
 
     FileEntity();
 
