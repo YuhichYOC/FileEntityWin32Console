@@ -19,4 +19,6 @@
 #include <string>
 #include <vector>
 
+#include <Shlwapi.h>
+
 using namespace std;

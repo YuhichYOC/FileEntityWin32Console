@@ -145,12 +145,14 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DirectoryEntity.h" />
     <ClInclude Include="FileEntity.h" />
     <ClInclude Include="FileEntityTest.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DirectoryEntity.cpp" />
     <ClCompile Include="FileEntity.cpp" />
     <ClCompile Include="FileEntityTest.cpp" />
     <ClCompile Include="FileEntityWin32Console.cpp" />

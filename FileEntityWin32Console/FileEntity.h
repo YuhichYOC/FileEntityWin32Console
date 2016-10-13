@@ -28,6 +28,8 @@ private:
 
     bool writeSuccess;
 
+    bool deleteSuccess;
+
     bool disposed;
 
     int EvaluateFetchSize();
@@ -45,6 +47,10 @@ private:
     void Fetch256();
 
     void Fetch1024();
+
+    wchar_t * WChar_tFromStr(string * arg);
+
+    string * StrFromWChar_t(wchar_t * arg);
 
 public:
 
@@ -74,6 +80,8 @@ public:
 
     bool IsWriteSuccess();
 
+    bool IsDeleteSuccess();
+
     void ReadPrepare();
 
     void WritePrepare();
@@ -81,6 +89,10 @@ public:
     void ReadFile();
 
     void WriteFile();
+
+    bool FindFile();
+
+    void DeleteExistingFile();
 
     FileEntity();
 

@@ -70,6 +70,11 @@ bool FileEntity::IsWriteSuccess()
     return writeSuccess;
 }
 
+bool FileEntity::IsDeleteSuccess()
+{
+    return deleteSuccess;
+}
+
 int FileEntity::EvaluateFetchSize()
 {
     fileSize = CountFileSize();
@@ -233,6 +238,26 @@ void FileEntity::Fetch1024()
     }
 }
 
+wchar_t * FileEntity::WChar_tFromStr(string * arg)
+{
+    size_t retSize = arg->length() + 1;
+    size_t convSize = 0;
+    wchar_t * retVal = new wchar_t[retSize];
+    mbstowcs_s(&convSize, retVal, retSize, arg->c_str(), _TRUNCATE);
+    return retVal;
+}
+
+string * FileEntity::StrFromWChar_t(wchar_t * arg)
+{
+    wstring castedArg = arg;
+    size_t retSize = castedArg.length() + 1;
+    size_t convSize = 0;
+    char * arrayFromArg = new char[retSize];
+    wcstombs_s(&convSize, arrayFromArg, retSize, arg, _TRUNCATE);
+    string * retVal = new string(arrayFromArg);
+    return retVal;
+}
+
 void FileEntity::ReadPrepare()
 {
     if (writePrepared) {
@@ -315,6 +340,34 @@ void FileEntity::WriteFile()
     ofile->close();
 
     writeSuccess = true;
+}
+
+bool FileEntity::FindFile()
+{
+    LPCWSTR filePath;
+    filePath = WChar_tFromStr(&directory.get()->append("\\").append(*fileName.get()));
+
+    if (PathFileExists(filePath)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+void FileEntity::DeleteExistingFile()
+{
+    deleteSuccess = false;
+
+    LPCWSTR filePath;
+    filePath = WChar_tFromStr(&directory.get()->append("\\").append(*fileName.get()));
+
+    if (FindFile()) {
+        int ret = DeleteFile(filePath);
+        if (ret != 0) {
+            deleteSuccess = true;
+        }
+    }
 }
 
 FileEntity::FileEntity()
