@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectoryEntity.h" />
+    <ClInclude Include="DirectoryEntityTest.h" />
     <ClInclude Include="FileEntity.h" />
     <ClInclude Include="FileEntityTest.h" />
     <ClInclude Include="stdafx.h" />
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectoryEntity.cpp" />
+    <ClCompile Include="DirectoryEntityTest.cpp" />
     <ClCompile Include="FileEntity.cpp" />
     <ClCompile Include="FileEntityTest.cpp" />
     <ClCompile Include="FileEntityWin32Console.cpp" />

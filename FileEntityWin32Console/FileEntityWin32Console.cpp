@@ -3,7 +3,21 @@
 
 #include "stdafx.h"
 
+#include "DirectoryEntityTest.h"
 #include "FileEntityTest.h"
+
+void DirectoryEntityTest01()
+{
+    DirectoryEntityTest * dTest = new DirectoryEntityTest();
+    dTest->DirectoryEntityTest01();
+    if (dTest->GetTestSuccess()) {
+        cout << "dTest 01 success." << "\n";
+    }
+    else {
+        cout << "dTest 01 failed." << "\n";
+    }
+    delete dTest;
+}
 
 void FileEntityTest01()
 {
@@ -15,6 +29,7 @@ void FileEntityTest01()
     else {
         cout << "fTest 01 failed." << "\n";
     }
+    delete fTest;
 }
 
 void FileEntityTest02()
@@ -27,14 +42,16 @@ void FileEntityTest02()
     else {
         cout << "fTest 02 failed." << "\n";
     }
+    delete fTest;
 }
 
 int main()
 {
     /*
     FileEntityTest01();
-    */
     FileEntityTest02();
+    */
+    DirectoryEntityTest01();
 
     return 0;
 }

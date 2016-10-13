@@ -4,6 +4,8 @@
 
 #include "FileEntity.h"
 
+#pragma comment(lib, "ShLwApi.Lib")
+
 class DirectoryEntity
 {
 private:
@@ -20,11 +22,19 @@ private:
 
     bool deleteSuccess;
 
+    unique_ptr<string> dirCopyTo;
+
+    bool useCopyRollback;
+
     bool disposed;
 
     wchar_t * WChar_tFromStr(string * arg);
 
     string * StrFromWChar_t(wchar_t * arg);
+
+    bool WChar_tStartsWith(wchar_t * arg1eval, string * arg2test);
+
+    DirectoryEntity * Describe(LPWIN32_FIND_DATA fileInfo, string * parentPath);
 
 public:
 
@@ -33,6 +43,8 @@ public:
     string * GetDirectory();
 
     bool RootDirectoryFound();
+
+    void Describe();
 
     void CreateRootDirectory(string * arg);
 
@@ -63,6 +75,8 @@ public:
     void DeleteExistingDir();
 
     void DeleteExistingDir(string * arg);
+
+    void DirCopy(string * arg, bool rollback);
 
     DirectoryEntity();
 

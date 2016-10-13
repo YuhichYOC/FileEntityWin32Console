@@ -22,10 +22,53 @@ string * DirectoryEntity::StrFromWChar_t(wchar_t * arg)
     return retVal;
 }
 
+bool DirectoryEntity::WChar_tStartsWith(wchar_t * arg1eval, string * arg2test)
+{
+    wstring castedArg1 = arg1eval;
+    if (castedArg1.length() < arg2test->length()) {
+        return false;
+    }
+    for (size_t i = 0; i < arg2test->length(); i++) {
+        if (castedArg1.at(i) != arg2test->at(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+DirectoryEntity * DirectoryEntity::Describe(LPWIN32_FIND_DATA fileInfo, string * parentPath)
+{
+    DirectoryEntity * addDir = new DirectoryEntity();
+    addDir->SetDirectory(&parentPath->append("\\").append(*StrFromWChar_t(fileInfo->cFileName)));
+
+    LPCTSTR dirPath;
+    dirPath = WChar_tFromStr(addDir->GetDirectory());
+    
+    HANDLE ret;
+    ret = FindFirstFile(dirPath, fileInfo);
+    if (ret != INVALID_HANDLE_VALUE) {
+        do {
+            if (fileInfo->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                if (WChar_tStartsWith(fileInfo->cFileName, new string(".\0")) || WChar_tStartsWith(fileInfo->cFileName, new string(".."))) {
+                    continue;
+                }
+                addDir->AddDirectory(Describe(fileInfo, addDir->GetDirectory()));
+            }
+            else {
+                FileEntity * addFile = new FileEntity();
+                addFile->SetFileName(StrFromWChar_t(fileInfo->cFileName));
+                addDir->AddFile(addFile);
+            }
+        } while (FindNextFile(ret, fileInfo));
+    }
+
+    return addDir;
+}
+
 void DirectoryEntity::SetDirectory(string * arg)
 {
     rootDirectoryFound = false;
-    if (FindDir()) {
+    if (FindDir(arg)) {
         directory.reset(arg);
         rootDirectoryFound = true;
     }
@@ -38,7 +81,38 @@ string * DirectoryEntity::GetDirectory()
 
 bool DirectoryEntity::RootDirectoryFound()
 {
-    return RootDirectoryFound;
+    return rootDirectoryFound;
+}
+
+void DirectoryEntity::Describe()
+{
+    if (!rootDirectoryFound) {
+        return;
+    }
+    LPCTSTR dirPath;
+    dirPath = WChar_tFromStr(&directory.get()->append("\\*.*"));
+    
+    HANDLE ret;
+    LPWIN32_FIND_DATA fileInfo = new WIN32_FIND_DATA();
+    
+    ret = FindFirstFile(dirPath, fileInfo);
+    if (ret != INVALID_HANDLE_VALUE) {
+        do {
+            if (fileInfo->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                if (WChar_tStartsWith(fileInfo->cFileName, new string(".\0")) || WChar_tStartsWith(fileInfo->cFileName, new string(".."))) {
+                    continue;
+                }
+                subDirectories->push_back(Describe(fileInfo, directory.get()));
+            }
+            else {
+                FileEntity * addFile = new FileEntity();
+                addFile->SetFileName(StrFromWChar_t(fileInfo->cFileName));
+                files->push_back(addFile);
+            }
+        } while (FindNextFile(ret, fileInfo));
+    }
+
+    delete fileInfo;
 }
 
 void DirectoryEntity::CreateRootDirectory(string * arg)
@@ -146,7 +220,12 @@ bool DirectoryEntity::FindDir()
 bool DirectoryEntity::FindDir(string * arg)
 {
     LPCWSTR dirPath;
-    dirPath = WChar_tFromStr(&directory.get()->append("\\").append(*arg));
+    if (directory.get() == nullptr) {
+        dirPath = WChar_tFromStr(arg);
+    }
+    else {
+        dirPath = WChar_tFromStr(&directory.get()->append("\\").append(*arg));
+    }
 
     if (PathFileExists(dirPath)) {
         return true;
