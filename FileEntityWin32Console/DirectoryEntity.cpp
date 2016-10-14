@@ -36,15 +36,24 @@ bool DirectoryEntity::WChar_tStartsWith(wchar_t * arg1eval, string * arg2test)
     return true;
 }
 
-DirectoryEntity * DirectoryEntity::Describe(LPWIN32_FIND_DATA fileInfo, string * parentPath)
+DirectoryEntity * DirectoryEntity::Describe(LPWIN32_FIND_DATA parentFileInfo, string * parentPath)
 {
     DirectoryEntity * addDir = new DirectoryEntity();
-    addDir->SetDirectory(&parentPath->append("\\").append(*StrFromWChar_t(fileInfo->cFileName)));
+    string * path = new string();
+    path->assign(*parentPath);
+    path->append("\\");
+    path->append(*StrFromWChar_t(parentFileInfo->cFileName));
+    addDir->SetDirectory(path);
 
+    unique_ptr<string> findPath(new string());
+    findPath->assign(*path);
+    findPath->append("\\*.*");
     LPCTSTR dirPath;
-    dirPath = WChar_tFromStr(addDir->GetDirectory());
+    dirPath = WChar_tFromStr(findPath.get());
     
     HANDLE ret;
+    LPWIN32_FIND_DATA fileInfo = new WIN32_FIND_DATA();
+
     ret = FindFirstFile(dirPath, fileInfo);
     if (ret != INVALID_HANDLE_VALUE) {
         do {
@@ -89,8 +98,12 @@ void DirectoryEntity::Describe()
     if (!rootDirectoryFound) {
         return;
     }
+    unique_ptr<string> path(new string());
+    path->assign(*directory.get());
+    path->append("\\*.*");
+
     LPCTSTR dirPath;
-    dirPath = WChar_tFromStr(&directory.get()->append("\\*.*"));
+    dirPath = WChar_tFromStr(path.get());
     
     HANDLE ret;
     LPWIN32_FIND_DATA fileInfo = new WIN32_FIND_DATA();

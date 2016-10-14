@@ -12,7 +12,7 @@ void DirectoryEntityTest::DirectoryEntityTest01()
     testSuccess = false;
 
     DirectoryEntity * d = new DirectoryEntity();
-    d->SetDirectory(new string("E:\\Tool\\SleepOut\\SleepOut"));
+    d->SetDirectory(new string("E:\\Tool\\aaa"));
     d->Describe();
 
     cout << "Test 01 progress." << "\n";
