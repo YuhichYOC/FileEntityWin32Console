@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 
+#include "WCharString.h"
+
 #include "FileEntity.h"
 
 #pragma comment(lib, "ShLwApi.Lib")

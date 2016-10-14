@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 
+#include "WCharString.h"
+
 class FileEntity
 {
 private:
