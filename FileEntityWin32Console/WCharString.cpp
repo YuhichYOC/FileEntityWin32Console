@@ -2,21 +2,13 @@
 
 #include "WCharString.h"
 
-WCharString::WCharString()
-{
-    value = unique_ptr<string>();
-}
-
-WCharString::~WCharString()
-{
-}
-
-void WCharString::Append(char * arg)
+WCharString * WCharString::Append(char * arg)
 {
     value->append(arg);
+    return this;
 }
 
-void WCharString::Append(wchar_t * arg)
+WCharString * WCharString::Append(wchar_t * arg)
 {
     wstring castedArg = arg;
     size_t argSize = castedArg.length() + 1;
@@ -24,19 +16,22 @@ void WCharString::Append(wchar_t * arg)
     unique_ptr<char> mbArg(new char[argSize]);
     wcstombs_s(&cnvSize, mbArg.get(), argSize, arg, _TRUNCATE);
     value->append(mbArg.get());
+    return this;
 }
 
-void WCharString::Append(string * arg)
+WCharString * WCharString::Append(string * arg)
 {
     value->append(*arg);
+    return this;
 }
 
-void WCharString::Append(const char * arg)
+WCharString * WCharString::Append(const char * arg)
 {
     value->append(arg);
+    return this;
 }
 
-void WCharString::Append(const wchar_t * arg)
+WCharString * WCharString::Append(const wchar_t * arg)
 {
     wstring castedArg = arg;
     size_t argSize = castedArg.length() + 1;
@@ -44,11 +39,13 @@ void WCharString::Append(const wchar_t * arg)
     unique_ptr<char> mbArg(new char[argSize]);
     wcstombs_s(&cnvSize, mbArg.get(), argSize, arg, _TRUNCATE);
     value->append(mbArg.get());
+    return this;
 }
 
-void WCharString::Append(const string * arg)
+WCharString * WCharString::Append(const string * arg)
 {
     value->append(*arg);
+    return this;
 }
 
 WCharString * WCharString::Value(char * arg)
@@ -93,18 +90,26 @@ WCharString * WCharString::Value(const string * arg)
     return ret;
 }
 
-wchar_t WCharString::ToWChar()
+wchar_t * WCharString::ToWChar()
 {
     size_t retSize = value->length() + 1;
     size_t cnvSize = 0;
-    unique_ptr<wchar_t> ret(new wchar_t[retSize]);
-    mbstowcs_s(&cnvSize, ret.get(), retSize, value->c_str(), _TRUNCATE);
-    wchar_t retVal;
-    retVal = *ret.get();
-    return retVal;
+    wchar_t * ret = new wchar_t[retSize];
+    mbstowcs_s(&cnvSize, ret, retSize, value->c_str(), _TRUNCATE);
+    return ret;
 }
 
-string WCharString::ToString()
+string * WCharString::ToString()
 {
-    return *value;
+    return value;
+}
+
+WCharString::WCharString()
+{
+    value = new string();
+}
+
+WCharString::~WCharString()
+{
+    delete value;
 }

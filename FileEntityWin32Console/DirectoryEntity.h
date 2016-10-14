@@ -14,6 +14,8 @@ private:
 
     unique_ptr<string> directory;
 
+    unique_ptr<WCharString> path;
+
     vector<DirectoryEntity *> * subDirectories;
 
     vector<FileEntity *> * files;
@@ -29,10 +31,6 @@ private:
     bool useCopyRollback;
 
     bool disposed;
-
-    wchar_t * WChar_tFromStr(string * arg);
-
-    string * StrFromWChar_t(wchar_t * arg);
 
     bool WChar_tStartsWith(wchar_t * arg1eval, string * arg2test);
 

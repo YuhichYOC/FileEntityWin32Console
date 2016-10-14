@@ -2,26 +2,6 @@
 
 #include "DirectoryEntity.h"
 
-wchar_t * DirectoryEntity::WChar_tFromStr(string * arg)
-{
-    size_t retSize = arg->length() + 1;
-    size_t convSize = 0;
-    wchar_t * retVal = new wchar_t[retSize];
-    mbstowcs_s(&convSize, retVal, retSize, arg->c_str(), _TRUNCATE);
-    return retVal;
-}
-
-string * DirectoryEntity::StrFromWChar_t(wchar_t * arg)
-{
-    wstring castedArg = arg;
-    size_t retSize = castedArg.length() + 1;
-    size_t convSize = 0;
-    unique_ptr<char> arrayFromArg(new char[retSize]);
-    wcstombs_s(&convSize, arrayFromArg.get(), retSize, arg, _TRUNCATE);
-    string * retVal = new string(arrayFromArg.get());
-    return retVal;
-}
-
 bool DirectoryEntity::WChar_tStartsWith(wchar_t * arg1eval, string * arg2test)
 {
     wstring castedArg1 = arg1eval;
@@ -39,15 +19,12 @@ bool DirectoryEntity::WChar_tStartsWith(wchar_t * arg1eval, string * arg2test)
 DirectoryEntity * DirectoryEntity::Describe(LPWIN32_FIND_DATA parentFileInfo, string * parentPath)
 {
     DirectoryEntity * addDir = new DirectoryEntity();
-    addDir->SetDirectory(&((new string(*parentPath))->append("\\").append(*StrFromWChar_t(parentFileInfo->cFileName))));
-
-    LPCTSTR dirPath;
-    dirPath = (LPCTSTR)WChar_tFromStr(&((new string(*parentPath))->append("\\").append(*StrFromWChar_t(parentFileInfo->cFileName)).append("\\*.*")));
+    addDir->SetDirectory(path->Value(parentPath)->Append("\\")->Append(parentFileInfo->cFileName)->ToString());
 
     HANDLE ret;
     LPWIN32_FIND_DATA fileInfo = new WIN32_FIND_DATA();
 
-    ret = FindFirstFile(dirPath, fileInfo);
+    ret = FindFirstFile((LPCWSTR)path->Value(parentPath)->Append("\\")->Append(parentFileInfo->cFileName)->Append("\\*.*")->ToWChar(), fileInfo);
     if (ret != INVALID_HANDLE_VALUE) {
         do {
             if (fileInfo->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
@@ -58,7 +35,7 @@ DirectoryEntity * DirectoryEntity::Describe(LPWIN32_FIND_DATA parentFileInfo, st
             }
             else {
                 FileEntity * addFile = new FileEntity();
-                addFile->SetFileName(StrFromWChar_t(fileInfo->cFileName));
+                addFile->SetFileName(path->Value(fileInfo->cFileName)->ToString());
                 addDir->AddFile(addFile);
             }
         } while (FindNextFile(ret, fileInfo));
@@ -92,13 +69,11 @@ void DirectoryEntity::Describe()
     if (!rootDirectoryFound) {
         return;
     }
-    LPCTSTR dirPath;
-    dirPath = (LPCTSTR)WChar_tFromStr(&((new string(*directory.get()))->append("\\*.*")));
 
     HANDLE ret;
     LPWIN32_FIND_DATA fileInfo = new WIN32_FIND_DATA();
 
-    ret = FindFirstFile(dirPath, fileInfo);
+    ret = FindFirstFile((LPCWSTR)path->Value(directory.get())->Append("\\*.*")->ToWChar(), fileInfo);
     if (ret != INVALID_HANDLE_VALUE) {
         do {
             if (fileInfo->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
@@ -109,7 +84,7 @@ void DirectoryEntity::Describe()
             }
             else {
                 FileEntity * addFile = new FileEntity();
-                addFile->SetFileName(StrFromWChar_t(fileInfo->cFileName));
+                addFile->SetFileName(path->Value(fileInfo->cFileName)->ToString());
                 files->push_back(addFile);
             }
         } while (FindNextFile(ret, fileInfo));
@@ -122,11 +97,8 @@ void DirectoryEntity::CreateRootDirectory(string * arg)
 {
     createSuccess = false;
 
-    LPCWSTR dirPath;
-    dirPath = (LPCWSTR)WChar_tFromStr(arg);
-
     if (!FindDir()) {
-        int ret = CreateDirectory(dirPath, nullptr);
+        int ret = CreateDirectory((LPCWSTR)path->Value(arg)->ToWChar(), nullptr);
         if (ret != 0) {
             createSuccess = true;
             directory.reset(arg);
@@ -178,11 +150,8 @@ void DirectoryEntity::CreateDir()
 {
     createSuccess = false;
 
-    LPCWSTR dirPath;
-    dirPath = (LPCWSTR)WChar_tFromStr(directory.get());
-
     if (!FindDir()) {
-        int ret = CreateDirectory(dirPath, nullptr);
+        int ret = CreateDirectory((LPCWSTR)path->Value(directory.get())->ToWChar(), nullptr);
         if (ret != 0) {
             createSuccess = true;
         }
@@ -193,11 +162,8 @@ void DirectoryEntity::CreateDir(string * arg)
 {
     createSuccess = false;
 
-    LPCWSTR dirPath;
-    dirPath = (LPCWSTR)WChar_tFromStr(&directory.get()->append("\\").append(*arg));
-
     if (!FindDir()) {
-        int ret = CreateDirectory(dirPath, nullptr);
+        int ret = CreateDirectory((LPCWSTR)path->Value(directory.get())->Append("\\")->Append(arg)->ToWChar(), nullptr);
         if (ret != 0) {
             createSuccess = true;
             DirectoryEntity * addDir = new DirectoryEntity();
@@ -209,10 +175,7 @@ void DirectoryEntity::CreateDir(string * arg)
 
 bool DirectoryEntity::FindDir()
 {
-    LPCWSTR dirPath;
-    dirPath = (LPCWSTR)WChar_tFromStr(directory.get());
-
-    if (PathFileExists(dirPath)) {
+    if (PathFileExists((LPCWSTR)path->Value(directory.get())->ToWChar())) {
         return true;
     }
     else {
@@ -222,31 +185,25 @@ bool DirectoryEntity::FindDir()
 
 bool DirectoryEntity::FindDir(string * arg)
 {
-    LPCWSTR dirPath;
     if (directory.get() == nullptr) {
-        dirPath = (LPCWSTR)WChar_tFromStr(arg);
+        if (PathFileExists((LPCWSTR)path->Value(arg)->ToWChar())) {
+            return true;
+        }
     }
     else {
-        dirPath = (LPCWSTR)WChar_tFromStr(&directory.get()->append("\\").append(*arg));
+        if (PathFileExists((LPCWSTR)path->Value(directory.get())->Append("\\")->Append(arg)->ToWChar())) {
+            return true;
+        }
     }
-
-    if (PathFileExists(dirPath)) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return false;
 }
 
 void DirectoryEntity::DeleteExistingDir()
 {
     deleteSuccess = false;
 
-    LPCWSTR dirPath;
-    dirPath = (LPCWSTR)WChar_tFromStr(directory.get());
-
     if (FindDir()) {
-        int ret = RemoveDirectory(dirPath);
+        int ret = RemoveDirectory((LPCWSTR)path->Value(directory.get())->ToWChar());
         if (ret != 0) {
             deleteSuccess = true;
         }
@@ -257,11 +214,8 @@ void DirectoryEntity::DeleteExistingDir(string * arg)
 {
     deleteSuccess = false;
 
-    LPCWSTR dirPath;
-    dirPath = (LPCWSTR)WChar_tFromStr(&directory.get()->append("\\").append(*arg));
-
     if (FindDir(arg)) {
-        int ret = RemoveDirectory(dirPath);
+        int ret = RemoveDirectory((LPCWSTR)path->Value(directory.get())->Append("\\")->Append(arg)->ToWChar());
         if (ret != 0) {
             deleteSuccess = true;
         }
@@ -271,6 +225,7 @@ void DirectoryEntity::DeleteExistingDir(string * arg)
 DirectoryEntity::DirectoryEntity()
 {
     directory = unique_ptr<string>();
+    path = unique_ptr<WCharString>();
     subDirectories = new vector<DirectoryEntity *>();
     files = new vector<FileEntity *>();
     disposed = false;

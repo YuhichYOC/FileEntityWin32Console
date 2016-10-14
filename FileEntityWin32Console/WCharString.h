@@ -6,21 +6,21 @@ class WCharString
 {
 private:
 
-    unique_ptr<string> value;
+    string * value;
 
 public:
 
-    void Append(char * arg);
+    WCharString * Append(char * arg);
 
-    void Append(wchar_t * arg);
+    WCharString * Append(wchar_t * arg);
 
-    void Append(string * arg);
+    WCharString * Append(string * arg);
 
-    void Append(const char * arg);
+    WCharString * Append(const char * arg);
 
-    void Append(const wchar_t * arg);
+    WCharString * Append(const wchar_t * arg);
 
-    void Append(const string * arg);
+    WCharString * Append(const string * arg);
 
     WCharString * Value(char * arg);
 
@@ -34,9 +34,9 @@ public:
 
     WCharString * Value(const string * arg);
 
-    wchar_t ToWChar();
+    wchar_t * ToWChar();
 
-    string ToString();
+    string * ToString();
 
     WCharString();
 
