@@ -69,7 +69,7 @@ public:
     void CreateDir(string * arg);
 
     bool FindDir();
-    
+
     bool FindDir(string * arg);
 
     void DeleteExistingDir();
@@ -84,4 +84,3 @@ public:
 
     ~DirectoryEntity();
 };
-

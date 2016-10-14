@@ -11,7 +11,7 @@ void DirectoryEntityTest::DirectoryEntityTest01()
 {
     testSuccess = false;
 
-    DirectoryEntity * d = new DirectoryEntity();
+    unique_ptr<DirectoryEntity> d(new DirectoryEntity());
     d->SetDirectory(new string("E:\\Tool\\aaa"));
     d->Describe();
 
