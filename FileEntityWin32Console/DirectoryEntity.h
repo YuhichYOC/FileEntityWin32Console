@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 
+#include "WCharString.h"
+
 #include "FileEntity.h"
 
 #pragma comment(lib, "ShLwApi.Lib")
@@ -11,6 +13,8 @@ class DirectoryEntity
 private:
 
     unique_ptr<string> directory;
+
+    unique_ptr<WCharString> path;
 
     vector<DirectoryEntity *> * subDirectories;
 
@@ -27,10 +31,6 @@ private:
     bool useCopyRollback;
 
     bool disposed;
-
-    wchar_t * WChar_tFromStr(string * arg);
-
-    string * StrFromWChar_t(wchar_t * arg);
 
     bool WChar_tStartsWith(wchar_t * arg1eval, string * arg2test);
 
