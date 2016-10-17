@@ -47,11 +47,15 @@ void FileEntityTest02()
 
 int main()
 {
+    cout << "Test started." << "\n";
     /*
     FileEntityTest01();
     FileEntityTest02();
     */
     DirectoryEntityTest01();
+
+    string value;
+    cin >> value;
 
     return 0;
 }
