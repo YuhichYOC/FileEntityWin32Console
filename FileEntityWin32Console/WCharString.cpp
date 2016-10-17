@@ -4,7 +4,7 @@
 
 void WCharString::Assign(char * arg)
 {
-    value->append(arg);
+    value.assign(arg);
 }
 
 void WCharString::Assign(wchar_t * arg)
@@ -14,168 +14,165 @@ void WCharString::Assign(wchar_t * arg)
     size_t cnvSize = 0;
     unique_ptr<char> mbArg(new char[argSize]);
     wcstombs_s(&cnvSize, mbArg.get(), argSize, arg, _TRUNCATE);
-    value->append(mbArg.get());
+    value.assign(mbArg.get());
+}
+
+void WCharString::Assign(string arg)
+{
+    value.assign(arg);
 }
 
 void WCharString::Assign(string * arg)
 {
-    value->append(*arg);
+    value.assign(*arg);
 }
 
-WCharString * WCharString::Append(char * arg)
+void WCharString::Assign(const char * arg)
 {
-    value->append(arg);
-    return this;
+    value.assign(arg);
 }
 
-WCharString * WCharString::Append(wchar_t * arg)
-{
-    wstring castedArg = arg;
-    size_t argSize = castedArg.length() + 1;
-    size_t cnvSize = 0;
-    unique_ptr<char> mbArg(new char[argSize]);
-    wcstombs_s(&cnvSize, mbArg.get(), argSize, arg, _TRUNCATE);
-    value->append(mbArg.get());
-    return this;
-}
-
-WCharString * WCharString::Append(string * arg)
-{
-    value->append(*arg);
-    return this;
-}
-
-WCharString * WCharString::Append(const char * arg)
-{
-    value->append(arg);
-    return this;
-}
-
-WCharString * WCharString::Append(const wchar_t * arg)
+void WCharString::Assign(const wchar_t * arg)
 {
     wstring castedArg = arg;
     size_t argSize = castedArg.length() + 1;
     size_t cnvSize = 0;
     unique_ptr<char> mbArg(new char[argSize]);
     wcstombs_s(&cnvSize, mbArg.get(), argSize, arg, _TRUNCATE);
-    value->append(mbArg.get());
-    return this;
+    value.assign(mbArg.get());
 }
 
-WCharString * WCharString::Append(const string * arg)
+void WCharString::Assign(const string * arg)
 {
-    value->append(*arg);
-    return this;
+    value.assign(*arg);
 }
 
-WCharString * WCharString::Value(char * arg)
+WCharString WCharString::Append(char * arg)
 {
-    WCharString * ret = new WCharString();
-    ret->Append(arg);
-    return ret;
+    value.append(arg);
+    return *this;
 }
 
-WCharString * WCharString::Value(wchar_t * arg)
-{
-    WCharString * ret = new WCharString();
-    ret->Append(arg);
-    return ret;
-}
-
-WCharString * WCharString::Value(string * arg)
-{
-    WCharString * ret = new WCharString();
-    ret->Append(arg);
-    return ret;
-}
-
-WCharString * WCharString::Value(const char * arg)
-{
-    WCharString * ret = new WCharString();
-    ret->Append(arg);
-    return ret;
-}
-
-WCharString * WCharString::Value(const wchar_t * arg)
-{
-    WCharString * ret = new WCharString();
-    ret->Append(arg);
-    return ret;
-}
-
-WCharString * WCharString::Value(const string * arg)
-{
-    WCharString * ret = new WCharString();
-    ret->Append(arg);
-    return ret;
-}
-
-WCharString WCharString::WAppend(char * arg)
-{
-    WCharString ret;
-    ret.Assign(arg);
-    return ret;
-}
-
-WCharString WCharString::WAppend(wchar_t * arg)
-{
-    WCharString ret;
-    ret.Assign(arg);
-    return ret;
-}
-
-WCharString WCharString::WAppend(string * arg)
-{
-    WCharString ret;
-    ret.Assign(arg);
-    return ret;
-}
-
-WCharString WCharString::WAppend(const char * arg)
-{
-    
-
-}
-
-WCharString WCharString::WAppend(const wchar_t * arg)
+WCharString WCharString::Append(wchar_t * arg)
 {
     wstring castedArg = arg;
     size_t argSize = castedArg.length() + 1;
     size_t cnvSize = 0;
     unique_ptr<char> mbArg(new char[argSize]);
     wcstombs_s(&cnvSize, mbArg.get(), argSize, arg, _TRUNCATE);
-    value->append(mbArg.get());
-    return this;
+    value.append(mbArg.get());
+    return *this;
 }
 
-WCharString WCharString::WAppend(const string * arg)
+WCharString WCharString::Append(string arg)
 {
-    value->append(*arg);
-    return this;
+    value.append(arg);
+    return *this;
 }
 
-wchar_t * WCharString::ToWChar()
+WCharString WCharString::Append(string * arg)
 {
-    size_t retSize = value->length() + 1;
+    value.append(*arg);
+    return *this;
+}
+
+WCharString WCharString::Append(const char * arg)
+{
+    value.append(arg);
+    return *this;
+}
+
+WCharString WCharString::Append(const wchar_t * arg)
+{
+    wstring castedArg = arg;
+    size_t argSize = castedArg.length() + 1;
     size_t cnvSize = 0;
-    retWChar = new wchar_t[retSize];
-    mbstowcs_s(&cnvSize, retWChar, retSize, value->c_str(), _TRUNCATE);
-    return retWChar;
+    unique_ptr<char> mbArg(new char[argSize]);
+    wcstombs_s(&cnvSize, mbArg.get(), argSize, arg, _TRUNCATE);
+    value.append(mbArg.get());
+    return *this;
 }
 
-string * WCharString::ToString()
+WCharString WCharString::Append(const string * arg)
+{
+    value.append(*arg);
+    return *this;
+}
+
+WCharString WCharString::Value(char * arg)
+{
+    Assign(arg);
+    return *this;
+}
+
+WCharString WCharString::Value(wchar_t * arg)
+{
+    Assign(arg);
+    return *this;
+}
+
+WCharString WCharString::Value(string arg)
+{
+    Assign(arg);
+    return *this;
+}
+
+WCharString WCharString::Value(string * arg)
+{
+    Assign(arg);
+    return *this;
+}
+
+WCharString WCharString::Value(const char * arg)
+{
+    Assign(arg);
+    return *this;
+}
+
+WCharString WCharString::Value(const wchar_t * arg)
+{
+    Assign(arg);
+    return *this;
+}
+
+WCharString WCharString::Value(const string * arg)
+{
+    Assign(arg);
+    return *this;
+}
+
+unique_ptr<wchar_t> WCharString::ToWChar()
+{
+    size_t retSize = value.length() + 1;
+    size_t cnvSize = 0;
+    unique_ptr<wchar_t> ret(new wchar_t[retSize]);
+    mbstowcs_s(&cnvSize, ret.get(), retSize, value.c_str(), _TRUNCATE);
+    return ret;
+}
+
+string WCharString::ToString()
 {
     return value;
 }
 
+bool WCharString::WChar_tStartsWith(wchar_t * arg1eval, string arg2test)
+{
+    wstring castedArg1 = arg1eval;
+    if (castedArg1.length() < arg2test.length()) {
+        return false;
+    }
+    for (size_t i = 0; i < arg2test.length(); i++) {
+        if (castedArg1.at(i) != arg2test.at(i)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 WCharString::WCharString()
 {
-    value = new string();
-    retWChar = new wchar_t();
 }
 
 WCharString::~WCharString()
 {
-    delete value;
-    delete retWChar;
 }

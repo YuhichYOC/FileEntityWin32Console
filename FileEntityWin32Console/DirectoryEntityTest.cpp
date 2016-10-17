@@ -12,7 +12,7 @@ void DirectoryEntityTest::DirectoryEntityTest01()
     testSuccess = false;
 
     unique_ptr<DirectoryEntity> d(new DirectoryEntity());
-    d->SetDirectory(new string("E:\\Tool\\aaa"));
+    d->SetDirectory(string("E:\\Tool\\aaa"));
     d->Describe();
 
     cout << "Test 01 progress." << "\n";

@@ -2,24 +2,24 @@
 
 #include "FileEntity.h"
 
-void FileEntity::SetDirectory(string * arg)
+void FileEntity::SetDirectory(string arg)
 {
-    directory.reset(arg);
+    directory.assign(arg);
 }
 
-string * FileEntity::GetDirectory()
+string FileEntity::GetDirectory()
 {
-    return directory.get();
+    return directory;
 }
 
-void FileEntity::SetFileName(string * arg)
+void FileEntity::SetFileName(string arg)
 {
-    fileName.reset(arg);
+    fileName.assign(arg);
 }
 
-string * FileEntity::GetFileName()
+string FileEntity::GetFileName()
 {
-    return fileName.get();
+    return fileName;
 }
 
 void FileEntity::SetFetchSize(int arg)
@@ -246,9 +246,9 @@ void FileEntity::ReadPrepare()
     }
 
     string fullPath;
-    fullPath.append(*directory.get());
+    fullPath.append(directory);
     fullPath.append("\\");
-    fullPath.append(*fileName.get());
+    fullPath.append(fileName);
 
     ifile = new ifstream(fullPath, ios::in | ios::binary);
 
@@ -268,9 +268,9 @@ void FileEntity::WritePrepare()
     }
 
     string fullPath;
-    fullPath.append(*directory.get());
+    fullPath.append(directory);
     fullPath.append("\\");
-    fullPath.append(*fileName.get());
+    fullPath.append(fileName);
 
     ofile = new ofstream(fullPath, ios::out | ios::binary);
 
@@ -324,10 +324,9 @@ void FileEntity::WriteFile()
 
 bool FileEntity::FindFile()
 {
-    LPCWSTR filePath;
-    filePath = path->Value(directory.get())->Append("\\")->Append(fileName.get())->ToWChar();
-
-    if (PathFileExists(filePath)) {
+    WCharString path;
+    unique_ptr<wchar_t> filePath = move(path.Value(directory).Append("\\").Append(fileName).ToWChar());
+    if (PathFileExists((LPCWSTR)filePath.get())) {
         return true;
     }
     else {
@@ -339,11 +338,10 @@ void FileEntity::DeleteExistingFile()
 {
     deleteSuccess = false;
 
-    LPCWSTR filePath;
-    filePath = path->Value(directory.get())->Append("\\")->Append(fileName.get())->ToWChar();
-
+    WCharString path;
+    unique_ptr<wchar_t> filePath = move(path.Value(directory).Append("\\").Append(fileName).ToWChar());
     if (FindFile()) {
-        int ret = DeleteFile(filePath);
+        int ret = DeleteFile((LPCWSTR)filePath.get());
         if (ret != 0) {
             deleteSuccess = true;
         }
@@ -352,9 +350,6 @@ void FileEntity::DeleteExistingFile()
 
 FileEntity::FileEntity()
 {
-    directory = unique_ptr<string>();
-    fileName = unique_ptr<string>();
-    path = unique_ptr<WCharString>();
     fetchSize = -1;
     ifile = nullptr;
     ofile = nullptr;

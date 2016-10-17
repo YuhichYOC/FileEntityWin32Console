@@ -8,11 +8,9 @@ class FileEntity
 {
 private:
 
-    unique_ptr<string> directory;
+    string directory;
 
-    unique_ptr<string> fileName;
-
-    unique_ptr<WCharString> path;
+    string fileName;
 
     int fetchSize;
 
@@ -54,13 +52,13 @@ private:
 
 public:
 
-    void SetDirectory(string * arg);
+    void SetDirectory(string arg);
 
-    string * GetDirectory();
+    string GetDirectory();
 
-    void SetFileName(string * arg);
+    void SetFileName(string arg);
 
-    string * GetFileName();
+    string GetFileName();
 
     void SetFetchSize(int arg);
 

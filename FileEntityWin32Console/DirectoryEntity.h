@@ -12,9 +12,7 @@ class DirectoryEntity
 {
 private:
 
-    unique_ptr<string> directory;
-
-    unique_ptr<WCharString> path;
+    string directory;
 
     vector<DirectoryEntity *> * subDirectories;
 
@@ -32,21 +30,19 @@ private:
 
     bool disposed;
 
-    bool WChar_tStartsWith(wchar_t * arg1eval, string * arg2test);
-
-    DirectoryEntity * Describe(LPWIN32_FIND_DATA fileInfo, string * parentPath);
+    DirectoryEntity * Describe(LPWIN32_FIND_DATA fileInfo, string parentPath);
 
 public:
 
-    void SetDirectory(string * arg);
+    void SetDirectory(string arg);
 
-    string * GetDirectory();
+    string GetDirectory();
 
     bool RootDirectoryFound();
 
     void Describe();
 
-    void CreateRootDirectory(string * arg);
+    void CreateRootDirectory(string arg);
 
     void SetDirectories(vector<DirectoryEntity *> * arg);
 
@@ -66,17 +62,17 @@ public:
 
     void CreateDir();
 
-    void CreateDir(string * arg);
+    void CreateDir(string arg);
 
     bool FindDir();
 
-    bool FindDir(string * arg);
+    bool FindDir(string arg);
 
     void DeleteExistingDir();
 
-    void DeleteExistingDir(string * arg);
+    void DeleteExistingDir(string arg);
 
-    void DirCopy(string * arg, bool rollback);
+    void DirCopy(string arg, bool rollback);
 
     DirectoryEntity();
 
