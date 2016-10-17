@@ -12,6 +12,8 @@ private:
 
     unique_ptr<string> fileName;
 
+    unique_ptr<WCharString> path;
+
     int fetchSize;
 
     ifstream * ifile;
@@ -49,10 +51,6 @@ private:
     void Fetch256();
 
     void Fetch1024();
-
-    wchar_t * WChar_tFromStr(string * arg);
-
-    string * StrFromWChar_t(wchar_t * arg);
 
 public:
 
