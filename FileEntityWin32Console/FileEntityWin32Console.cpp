@@ -19,6 +19,19 @@ void DirectoryEntityTest01()
     delete dTest;
 }
 
+void DirectoryEntityTest02()
+{
+    DirectoryEntityTest * dTest = new DirectoryEntityTest();
+    dTest->DirectoryEntityTest02();
+    if (dTest->GetTestSuccess()) {
+        cout << "dTest 02 success." << "\n";
+    }
+    else {
+        cout << "dTest 02 failed." << "\n";
+    }
+    delete dTest;
+}
+
 void FileEntityTest01()
 {
     FileEntityTest * fTest = new FileEntityTest();
@@ -48,11 +61,13 @@ void FileEntityTest02()
 int main()
 {
     cout << "Test started." << "\n";
+
     /*
     FileEntityTest01();
     FileEntityTest02();
-    */
     DirectoryEntityTest01();
+    */
+    DirectoryEntityTest02();
 
     string value;
     cin >> value;

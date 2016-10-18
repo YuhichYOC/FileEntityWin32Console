@@ -12,7 +12,9 @@ class DirectoryEntity
 {
 private:
 
-    string directory;
+    string directoryName;
+
+    string fullPath;
 
     vector<DirectoryEntity *> * subDirectories;
 
@@ -24,19 +26,25 @@ private:
 
     bool deleteSuccess;
 
-    unique_ptr<string> dirCopyTo;
+    string dirCopyTo;
 
     bool useCopyRollback;
+
+    bool copySuccess;
 
     bool disposed;
 
     DirectoryEntity * Describe(LPWIN32_FIND_DATA fileInfo, string parentPath);
 
+    void DirCopy(DirectoryEntity * arg1subDir, string arg2path);
+
 public:
 
     void SetDirectory(string arg);
 
-    string GetDirectory();
+    string GetDirectoryName();
+
+    string GetFullPath();
 
     bool RootDirectoryFound();
 

@@ -14,6 +14,8 @@ public:
 
     void DirectoryEntityTest01();
 
+    void DirectoryEntityTest02();
+
     DirectoryEntityTest();
 
     ~DirectoryEntityTest();
