@@ -142,8 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="LICENSE" />
-    <Text Include="ReadMe.txt" />
+    <Text Include="..\LICENSE" />
+    <Text Include="..\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectoryEntity.h" />
