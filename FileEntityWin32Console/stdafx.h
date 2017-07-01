@@ -20,7 +20,6 @@
 #include <vector>
 
 #include <Shlwapi.h>
-
-#pragma comment (lib, "shlwapi.dll")
+#pragma comment (lib, "shlwapi.lib")
 
 using namespace std;
