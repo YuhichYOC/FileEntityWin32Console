@@ -1,9 +1,9 @@
-/*
+ï»¿/*
 *
 * FileEntityTest.cpp
 *
 * Copyright 2016 Yuichi Yoshii
-*     ‹gˆä—Yˆê @ ‹gˆäŽY‹Æ  you.65535.kir@gmail.com
+*     å‰äº•é›„ä¸€ @ å‰äº•ç”£æ¥­  you.65535.kir@gmail.com
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -33,11 +33,11 @@ void FileEntityTest::FileEntityTest01()
     testSuccess = false;
 
     FileEntity * f = new FileEntity();
-    //f->SetDirectory(new string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ì¬•¨\\Proj.1609"));
-    //f->SetFileName(new string("TestMethod4 - ƒRƒs["));
-    // ‚¤‚¹‚â‚ëII new ‚È‚¢IIƒLƒ‚‚¢II
-    f->SetDirectory(string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ì¬•¨\\Proj.1609"));
-    f->SetFileName(string("TestMethod4 - ƒRƒs["));
+    //f->SetDirectory(new string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ä½œæˆç‰©\\Proj.1609"));
+    //f->SetFileName(new string("TestMethod4 - ã‚³ãƒ”ãƒ¼"));
+    // ã†ã›ã‚„ã‚ï¼ï¼ new ãªã„ï¼ï¼ã‚­ãƒ¢ã„ï¼ï¼
+    f->SetDirectory(string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ä½œæˆç‰©\\Proj.1609"));
+    f->SetFileName(string("TestMethod4 - ã‚³ãƒ”ãƒ¼"));
 
     f->ReadPrepare();
     if (!f->IsReadPrepared()) {
@@ -69,10 +69,10 @@ void FileEntityTest::FileEntityTest02()
     testSuccess = false;
 
     FileEntity * f = new FileEntity();
-    //f->SetDirectory(new string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ì¬•¨\\Proj.1609"));
-    //f->SetFileName(new string("TestMethod4 - ƒRƒs["));
-    f->SetDirectory(string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ì¬•¨\\Proj.1609"));
-    f->SetFileName(string("TestMethod4 - ƒRƒs["));
+    //f->SetDirectory(new string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ä½œæˆç‰©\\Proj.1609"));
+    //f->SetFileName(new string("TestMethod4 - ã‚³ãƒ”ãƒ¼"));
+    f->SetDirectory(string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ä½œæˆç‰©\\Proj.1609"));
+    f->SetFileName(string("TestMethod4 - ã‚³ãƒ”ãƒ¼"));
 
     f->ReadPrepare();
     if (!f->IsReadPrepared()) {
@@ -89,10 +89,10 @@ void FileEntityTest::FileEntityTest02()
     }
 
     FileEntity * o = new FileEntity();
-    //o->SetDirectory(new string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ì¬•¨\\Proj.1609"));
-    //o->SetFileName(new string("TestMethod6 - ƒRƒs["));
-    o->SetDirectory(string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ì¬•¨\\Proj.1609"));
-    o->SetFileName(string("TestMethod6 - ƒRƒs["));
+    //o->SetDirectory(new string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ä½œæˆç‰©\\Proj.1609"));
+    //o->SetFileName(new string("TestMethod6 - ã‚³ãƒ”ãƒ¼"));
+    o->SetDirectory(string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\ä½œæˆç‰©\\Proj.1609"));
+    o->SetFileName(string("TestMethod6 - ã‚³ãƒ”ãƒ¼"));
 
     o->WritePrepare();
     if (!o->IsWritePrepared()) {
