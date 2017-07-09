@@ -37,9 +37,9 @@ private:
 
     string fullPath;
 
-    vector<DirectoryEntity *> * subDirectories;
+    vector<DirectoryEntity *> subDirectories;
 
-    vector<FileEntity *> * files;
+    vector<FileEntity *> files;
 
     bool rootDirectoryFound;
 
@@ -73,15 +73,15 @@ public:
 
     void CreateRootDirectory(string arg);
 
-    void SetDirectories(vector<DirectoryEntity *> * arg);
+    void SetDirectories(vector<DirectoryEntity *> arg);
 
-    vector<DirectoryEntity *> * GetDirectories();
+    vector<DirectoryEntity *> GetDirectories();
 
     void AddDirectory(DirectoryEntity * arg);
 
-    void SetFiles(vector<FileEntity *> * arg);
+    void SetFiles(vector<FileEntity *> arg);
 
-    vector<FileEntity *> * GetFiles();
+    vector<FileEntity *> GetFiles();
 
     void AddFile(FileEntity * arg);
 

@@ -65,22 +65,22 @@ void DirectoryEntity::DirCopy(DirectoryEntity * arg1subDir, string arg2path)
     int ret = CreateDirectory((LPCWSTR)dirPath.get(), nullptr);
 
     if (ret != 0) {
-        for (size_t i = 0; i < arg1subDir->GetDirectories()->size(); i++) {
+        for (size_t i = 0; i < arg1subDir->GetDirectories().size(); i++) {
             if (!copySuccess) {
                 return;
             }
-            DirCopy(arg1subDir->GetDirectories()->at(i), arg2path);
+            DirCopy(arg1subDir->GetDirectories().at(i), arg2path);
         }
-        for (size_t j = 0; j < arg1subDir->GetFiles()->size(); j++) {
+        for (size_t j = 0; j < arg1subDir->GetFiles().size(); j++) {
             if (!copySuccess) {
                 return;
             }
             string filePathFrom = arg1subDir->GetFullPath();
             filePathFrom.append("\\");
-            filePathFrom.append(arg1subDir->GetFiles()->at(j)->GetFileName());
+            filePathFrom.append(arg1subDir->GetFiles().at(j)->GetFileName());
             string filePathTo = arg2path;
             filePathTo.append("\\");
-            filePathTo.append(arg1subDir->GetFiles()->at(j)->GetFileName());
+            filePathTo.append(arg1subDir->GetFiles().at(j)->GetFileName());
             unique_ptr<wchar_t> from = move(path.Value(filePathFrom).ToWChar());
             unique_ptr<wchar_t> to = move(path.Value(filePathTo).ToWChar());
             int ret = CopyFile((LPCWSTR)from.get(), (LPCWSTR)to.get(), true);
@@ -137,12 +137,12 @@ void DirectoryEntity::Describe()
                 if (path.WChar_tStartsWith(fileInfo->cFileName, string(".\0")) || path.WChar_tStartsWith(fileInfo->cFileName, string(".."))) {
                     continue;
                 }
-                subDirectories->push_back(Describe(fileInfo, fullPath));
+                subDirectories.push_back(Describe(fileInfo, fullPath));
             }
             else {
                 FileEntity * addFile = new FileEntity();
                 addFile->SetFileName(path.Value(fileInfo->cFileName).ToString());
-                files->push_back(addFile);
+                files.push_back(addFile);
             }
         } while (FindNextFile(ret, fileInfo));
     }
@@ -166,34 +166,34 @@ void DirectoryEntity::CreateRootDirectory(string arg)
     }
 }
 
-void DirectoryEntity::SetDirectories(vector<DirectoryEntity *> * arg)
+void DirectoryEntity::SetDirectories(vector<DirectoryEntity *> arg)
 {
     subDirectories = arg;
 }
 
-vector<DirectoryEntity *> * DirectoryEntity::GetDirectories()
+vector<DirectoryEntity *> DirectoryEntity::GetDirectories()
 {
     return subDirectories;
 }
 
 void DirectoryEntity::AddDirectory(DirectoryEntity * arg)
 {
-    subDirectories->push_back(arg);
+    subDirectories.push_back(arg);
 }
 
-void DirectoryEntity::SetFiles(vector<FileEntity *> * arg)
+void DirectoryEntity::SetFiles(vector<FileEntity *> arg)
 {
     files = arg;
 }
 
-vector<FileEntity *> * DirectoryEntity::GetFiles()
+vector<FileEntity *> DirectoryEntity::GetFiles()
 {
     return files;
 }
 
 void DirectoryEntity::AddFile(FileEntity * arg)
 {
-    files->push_back(arg);
+    files.push_back(arg);
 }
 
 bool DirectoryEntity::IsCreateSuccess()
@@ -232,7 +232,7 @@ void DirectoryEntity::CreateDir(string arg)
             createSuccess = true;
             DirectoryEntity * addDir = new DirectoryEntity();
             addDir->SetDirectory(arg);
-            subDirectories->push_back(addDir);
+            subDirectories.push_back(addDir);
         }
     }
 }
@@ -320,21 +320,17 @@ void DirectoryEntity::DirCopy(string arg, bool rollback)
 
 DirectoryEntity::DirectoryEntity()
 {
-    subDirectories = new vector<DirectoryEntity *>();
-    files = new vector<FileEntity *>();
     disposed = false;
 }
 
 void DirectoryEntity::Dispose()
 {
-    for (size_t i = 0; i < subDirectories->size(); i++) {
-        delete subDirectories->at(i);
+    for (size_t i = 0; i < subDirectories.size(); i++) {
+        delete subDirectories.at(i);
     }
-    delete subDirectories;
-    for (size_t j = 0; j < files->size(); j++) {
-        delete files->at(j);
+    for (size_t j = 0; j < files.size(); j++) {
+        delete files.at(j);
     }
-    delete files;
     disposed = true;
 }
 

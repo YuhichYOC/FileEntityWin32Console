@@ -41,7 +41,7 @@ private:
 
     int fileSize;
 
-    vector<char> * fileContents;
+    vector<char> fileContents;
 
     bool readPrepared;
 
@@ -85,11 +85,9 @@ public:
 
     int GetFetchSize();
 
-    void SetFileContents(vector<char> * arg);
+    void SetFileContents(vector<char> arg);
 
-    void SetFileContentsClone(vector<char> * arg);
-
-    vector<char> * GetFileContents();
+    vector<char> GetFileContents();
 
     bool IsReadPrepared();
 

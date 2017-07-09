@@ -53,20 +53,12 @@ int FileEntity::GetFetchSize()
     return fetchSize;
 }
 
-void FileEntity::SetFileContents(vector<char> * arg)
+void FileEntity::SetFileContents(vector<char> arg)
 {
     fileContents = arg;
 }
 
-void FileEntity::SetFileContentsClone(vector<char> * arg)
-{
-    fileContents = new vector<char>();
-    for (size_t i = 0; i < arg->size(); i++) {
-        fileContents->push_back(arg->at(i));
-    }
-}
-
-vector<char> * FileEntity::GetFileContents()
+vector<char> FileEntity::GetFileContents()
 {
     return fileContents;
 }
@@ -185,7 +177,7 @@ void FileEntity::Fetch4()
             iLoopCount = fileSize;
         }
         for (int i = 0; i < iLoopCount; i++) {
-            fileContents->push_back(readBuffer[i]);
+            fileContents.push_back(readBuffer[i]);
         }
         fileSize -= 4;
     }
@@ -202,7 +194,7 @@ void FileEntity::Fetch16()
             iLoopCount = fileSize;
         }
         for (int i = 0; i < iLoopCount; i++) {
-            fileContents->push_back(readBuffer[i]);
+            fileContents.push_back(readBuffer[i]);
         }
         fileSize -= 16;
     }
@@ -219,7 +211,7 @@ void FileEntity::Fetch64()
             iLoopCount = fileSize;
         }
         for (int i = 0; i < iLoopCount; i++) {
-            fileContents->push_back(readBuffer[i]);
+            fileContents.push_back(readBuffer[i]);
         }
         fileSize -= 64;
     }
@@ -236,7 +228,7 @@ void FileEntity::Fetch256()
             iLoopCount = fileSize;
         }
         for (int i = 0; i < iLoopCount; i++) {
-            fileContents->push_back(readBuffer[i]);
+            fileContents.push_back(readBuffer[i]);
         }
         fileSize -= 256;
     }
@@ -253,7 +245,7 @@ void FileEntity::Fetch1024()
             iLoopCount = fileSize;
         }
         for (int i = 0; i < iLoopCount; i++) {
-            fileContents->push_back(readBuffer[i]);
+            fileContents.push_back(readBuffer[i]);
         }
         fileSize -= 1024;
     }
@@ -334,9 +326,9 @@ void FileEntity::WriteFile()
 {
     writeSuccess = false;
 
-    int iWriteCount = (int)fileContents->size();
+    int iWriteCount = (int)fileContents.size();
     for (int i = 0; i < iWriteCount; i++) {
-        ofile->write(&fileContents->at(i), 1);
+        ofile->write(&fileContents.at(i), 1);
     }
     ofile->close();
 
@@ -374,7 +366,6 @@ FileEntity::FileEntity()
     fetchSize = -1;
     ifile = nullptr;
     ofile = nullptr;
-    fileContents = new vector<char>();
     disposed = false;
 }
 
@@ -388,7 +379,6 @@ void FileEntity::Dispose()
         ofile->close();
         delete ofile;
     }
-    delete fileContents;
     disposed = true;
 }
 

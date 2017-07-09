@@ -33,9 +33,6 @@ void FileEntityTest::FileEntityTest01()
     testSuccess = false;
 
     FileEntity * f = new FileEntity();
-    //f->SetDirectory(new string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\作成物\\Proj.1609"));
-    //f->SetFileName(new string("TestMethod4 - コピー"));
-    // うせやろ！！ new ない！！キモい！！
     f->SetDirectory(string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\作成物\\Proj.1609"));
     f->SetFileName(string("TestMethod4 - コピー"));
 
@@ -53,7 +50,7 @@ void FileEntityTest::FileEntityTest01()
         return;
     }
 
-    vector<char> * test = new vector<char>();
+    vector<char> test;
     test = f->GetFileContents();
 
     cout << "FileEntityTest01 success." << "\n";
@@ -69,8 +66,6 @@ void FileEntityTest::FileEntityTest02()
     testSuccess = false;
 
     FileEntity * f = new FileEntity();
-    //f->SetDirectory(new string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\作成物\\Proj.1609"));
-    //f->SetFileName(new string("TestMethod4 - コピー"));
     f->SetDirectory(string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\作成物\\Proj.1609"));
     f->SetFileName(string("TestMethod4 - コピー"));
 
@@ -89,8 +84,6 @@ void FileEntityTest::FileEntityTest02()
     }
 
     FileEntity * o = new FileEntity();
-    //o->SetDirectory(new string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\作成物\\Proj.1609"));
-    //o->SetFileName(new string("TestMethod6 - コピー"));
     o->SetDirectory(string("E:\\Users\\b50061tem.NES00\\Desktop\\Desktop\\作成物\\Proj.1609"));
     o->SetFileName(string("TestMethod6 - コピー"));
 
@@ -101,7 +94,7 @@ void FileEntityTest::FileEntityTest02()
         delete o;
         return;
     }
-    o->SetFileContentsClone(f->GetFileContents());
+    o->SetFileContents(f->GetFileContents());
     o->WriteFile();
     if (!o->IsWriteSuccess()) {
         cout << "FileEntityTest02 write file failed." << "\n";
